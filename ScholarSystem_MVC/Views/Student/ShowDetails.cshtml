@@ -1,0 +1,9 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "ShowDetails";
+}
+
+<h1>ShowDetails</h1>
+<h2>@Model.Name</h2>
+<h2>@Model.Age</h2>
+<h2>@Model.Department?.Name</h2>

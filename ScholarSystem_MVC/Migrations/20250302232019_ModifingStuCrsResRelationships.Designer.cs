@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ScholarSystem_MVC.DbContexts;
 
@@ -10,9 +11,11 @@ using ScholarSystem_MVC.DbContexts;
 namespace ScholarSystem_MVC.Migrations
 {
     [DbContext(typeof(ScholarSystemDbContext))]
-    partial class ScholarSystemDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250302232019_ModifingStuCrsResRelationships")]
+    partial class ModifingStuCrsResRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

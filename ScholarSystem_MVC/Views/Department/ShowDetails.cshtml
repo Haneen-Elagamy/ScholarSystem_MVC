@@ -1,0 +1,15 @@
+﻿@model Department
+@{
+    ViewData["Title"] = "ShowDetails";
+}
+
+<div class="container mt-4">
+    <h1 class="text-primary">Department Details</h1>
+    <div class="card shadow-lg p-4">
+        <h3><strong>Name:</strong> @Model.Name</h3>
+        <h3><strong>Manager Name:</strong> @Model.MgrName</h3>
+        <h3><strong>Students Count:</strong> @(Model.Students?.Count ?? 0)</h3>
+        <h3><strong>Teachers Count:</strong> @(Model.Teachers?.Count ?? 0)</h3>
+        <h3><strong>Courses Count:</strong> @(Model.Courses?.Count ?? 0)</h3>
+    </div>
+</div>

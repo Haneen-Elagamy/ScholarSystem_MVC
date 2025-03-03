@@ -1,0 +1,18 @@
+﻿@model DepartmentViewModel
+@{
+    ViewData["Title"] = "ShowDepartment";
+}
+
+<h1>ShowDepartment</h1>
+
+<h1>Department: @Model.Name</h1>
+<label>Department State:</label>
+<h2 class="text-primary">@Model.DepartmentState</h2>
+<label>Select a Student (Age > 25):</label>
+<select class="form-control">
+    @foreach (var student in Model.StudentsAbove25)
+    {
+        <option value="@student.Value">@student.Text</option>
+    }
+</select>
+<a asp-action="ShowAll" class="btn btn-secondary mt-3">Back to List</a>

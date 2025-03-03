@@ -1,0 +1,32 @@
+﻿@model List<Department>
+@{
+    ViewData["Title"] = "ShowAll";
+}
+
+<h1>ShowAll</h1>
+<table class=" table table-striped table-bordered text-center table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>Name</th>
+            <th>Manager Name</th>
+            <th>Students Count</th>
+            <th>Teachers Count</th>
+            <th>Courses Count</th>
+        </tr>
+
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>@item.MgrName</td>
+                <td>@(item.Students?.Count ?? 0)</td>
+                <td>@(item.Teachers?.Count ?? 0)</td>
+                <td>@(item.Courses?.Count ?? 0)</td>
+            </tr>
+        }
+    </tbody>
+
+</table>
+

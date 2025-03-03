@@ -3,7 +3,11 @@
     ViewData["Title"] = "ShowDetails";
 }
 
-<h1>ShowDetails</h1>
-<h2>@Model.Name</h2>
-<h2>@Model.Age</h2>
-<h2>@Model.Department?.Name</h2>
+<div class="container mt-4">
+    <h1 class="text-primary">Student Details</h1>
+    <div class="card shadow-lg p-4">
+        <h3><strong>Name:</strong> @Model.Name</h3>
+        <h3><strong>Age:</strong> @Model.Age</h3>
+        <h3><strong>Department:</strong> @(Model.Department?.Name ?? "Not Assigned")</h3>
+    </div>
+</div>

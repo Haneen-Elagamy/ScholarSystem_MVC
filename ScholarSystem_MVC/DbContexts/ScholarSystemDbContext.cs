@@ -43,13 +43,26 @@ namespace ScholarSystem_MVC.DbContexts
                 .OnDelete(DeleteBehavior.Restrict);
 
             //Many to Many>> Student to Course through StuCrsRes
-            modelBuilder.Entity<Student>()
-                .HasMany(S => S.StuCrsRes)
-                .WithOne(SCR => SCR.Student);
+            //modelBuilder.Entity<Student>()
+            //    .HasMany(S => S.StuCrsRes)
+            //    .WithOne(SCR => SCR.Student);
 
-            modelBuilder.Entity<Course>()
-                .HasMany(C => C.StuCrsRes)
-                .WithOne(SCR => SCR.Course);
+
+
+            //modelBuilder.Entity<Course>()
+            //    .HasMany(C => C.StuCrsRes)
+            //    .WithOne(SCR => SCR.Course);
+            modelBuilder.Entity<StuCrsRes>()
+                .HasOne(SCR => SCR.Student)
+                .WithMany(S => S.StuCrsRes)
+                .HasForeignKey(SCR => SCR.StudentId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<StuCrsRes>()
+                .HasOne(SCR => SCR.Course)
+                .WithMany(C => C.StuCrsRes)
+                .HasForeignKey(SCR => SCR.CourseId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<StuCrsRes>()
                 .HasKey(SCR => new { SCR.StudentId, SCR.CourseId });//Composite PK

@@ -42,16 +42,6 @@ namespace ScholarSystem_MVC.DbContexts
                 .HasForeignKey(T => T.CourseId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //Many to Many>> Student to Course through StuCrsRes
-            //modelBuilder.Entity<Student>()
-            //    .HasMany(S => S.StuCrsRes)
-            //    .WithOne(SCR => SCR.Student);
-
-
-
-            //modelBuilder.Entity<Course>()
-            //    .HasMany(C => C.StuCrsRes)
-            //    .WithOne(SCR => SCR.Course);
             modelBuilder.Entity<StuCrsRes>()
                 .HasOne(SCR => SCR.Student)
                 .WithMany(S => S.StuCrsRes)

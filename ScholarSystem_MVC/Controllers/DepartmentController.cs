@@ -39,19 +39,17 @@ namespace ScholarSystem_MVC.Controllers
         [HttpPost]
         public IActionResult SaveAdd(Department DeptFromReq)
         {
-            if (ModelState.IsValid)
+            //if (ModelState.IsValid)
+            //{
+            //    departmentBL.AddDept(DeptFromReq);
+            //    return RedirectToAction(nameof(ShowAll));
+            //}
+            if (DeptFromReq.Name != null)
             {
                 departmentBL.AddDept(DeptFromReq);
-
-                // Debugging: Check if it's really saved
-                var savedDept = departmentBL.GetById(DeptFromReq.Id);
-                if (savedDept == null)
-                {
-                    return Content("Department was NOT saved! Check DB context.");
-                }
-
                 return RedirectToAction(nameof(ShowAll));
             }
+
             return View("Add", DeptFromReq);//return form with validation errors
 
         }

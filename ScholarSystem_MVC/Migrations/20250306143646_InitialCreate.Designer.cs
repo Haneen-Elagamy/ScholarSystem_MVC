@@ -11,8 +11,8 @@ using ScholarSystem_MVC.DbContexts;
 namespace ScholarSystem_MVC.Migrations
 {
     [DbContext(typeof(ScholarSystemDbContext))]
-    [Migration("20250302193444_AddValidationToDepartment")]
-    partial class AddValidationToDepartment
+    [Migration("20250306143646_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

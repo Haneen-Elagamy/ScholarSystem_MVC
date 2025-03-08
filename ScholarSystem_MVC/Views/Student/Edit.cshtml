@@ -1,0 +1,39 @@
+﻿@model StuWithDeptListViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<form asp-action="SaveEdit" asp-controller="Student" asp-route-id="@Model.Id" method="post">
+    <input type="hidden" asp-for="Id" />  <!-- Ensure ID is sent -->
+    <div class="form-group">
+        <label>Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Age</label>
+        <input asp-for="Age" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Department</label>
+        <select asp-for="DepartmentId" class="form-control">
+            @foreach(var item in Model.DeptList)
+            {
+                if(item.Id==Model.DepartmentId)
+                {
+                    <option value="@item.Id" selected>@item.Name</option>
+                }
+                else
+                {
+                    <option value="@item.Id">@item.Name</option>
+                }
+            }
+        </select>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save</button>
+
+</form>
+<br />
+<a asp-action="ShowAll" class=" btn btn-secondary">Back To List</a>

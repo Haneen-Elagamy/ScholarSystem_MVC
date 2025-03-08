@@ -1,0 +1,28 @@
+﻿@model StuWithDeptListViewModel
+@{
+    ViewData["Title"] = "Add";
+}
+
+<h1>Add Student</h1>
+
+<form asp-action="SaveAdd" method="post">
+    <div class="form-group">
+        <label >Name</label>
+        <input asp-for="Name" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Age</label>
+        <input asp-for="Age" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Department</label>
+        <select asp-for="DepartmentId" asp-items="@(new SelectList(Model.DeptList, "Id", "Name"))" class="form-control">
+            <option value="">-- Select Department --</option>
+        </select>
+    </div>
+    <br />
+    <button type="submit" class="btn btn-primary">Save</button>
+
+</form>
+<br />
+<a asp-action="ShowAll" class=" btn btn-secondary">Back To List</a>

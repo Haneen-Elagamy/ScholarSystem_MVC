@@ -11,8 +11,8 @@ using ScholarSystem_MVC.DbContexts;
 namespace ScholarSystem_MVC.Migrations
 {
     [DbContext(typeof(ScholarSystemDbContext))]
-    [Migration("20250302232019_ModifingStuCrsResRelationships")]
-    partial class ModifingStuCrsResRelationships
+    [Migration("20250308105554_AddIsDeletedColumnToStudent")]
+    partial class AddIsDeletedColumnToStudent
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,6 +106,9 @@ namespace ScholarSystem_MVC.Migrations
 
                     b.Property<int>("DepartmentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

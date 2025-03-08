@@ -1,0 +1,17 @@
+﻿@model Student
+@{
+    ViewData["Title"] = "DeleteWarning";
+}
+
+<h1>DeleteWarning</h1>
+
+<h2>Are you sure you want to delete this student?</h2>
+<p>Name: @Model.Name</p>
+<p>Age: @Model.Age</p>
+<p>Department: @(Model.Department?.Name ?? "No Department")</p>
+
+<form asp-action="ConfirmDelete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a asp-action="ShowAll" class="btn btn-secondary">Cancel</a>
+</form>

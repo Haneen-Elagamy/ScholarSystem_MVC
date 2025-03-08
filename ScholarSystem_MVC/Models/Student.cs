@@ -9,6 +9,7 @@ namespace ScholarSystem_MVC.Models
         public int Id { get; set; }
         public string Name { get; set; }
         public int Age { get; set; }
+        public bool IsDeleted { get; set; }
         [ForeignKey("Department")]
         public int DepartmentId { get; set; }
         //Navigation property

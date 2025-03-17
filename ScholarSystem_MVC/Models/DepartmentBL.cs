@@ -21,8 +21,9 @@ namespace ScholarSystem_MVC.Models
         //GetById
         public Department GetById(int id)
         {
-            return Context.Departments.FirstOrDefault(D => D.Id == id);
+            return Context.Departments?.FirstOrDefault(D => D.Id == id);
         }
+
 
         //Add
         public void AddDept (Department DeptSent)

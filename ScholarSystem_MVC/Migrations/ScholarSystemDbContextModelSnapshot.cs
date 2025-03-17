@@ -46,7 +46,7 @@ namespace ScholarSystem_MVC.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Courses");
+                    b.ToTable("Courses", (string)null);
                 });
 
             modelBuilder.Entity("ScholarSystem_MVC.Models.Department", b =>
@@ -69,7 +69,7 @@ namespace ScholarSystem_MVC.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("ScholarSystem_MVC.Models.StuCrsRes", b =>
@@ -87,7 +87,7 @@ namespace ScholarSystem_MVC.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("StuCrsRes");
+                    b.ToTable("StuCrsRes", (string)null);
                 });
 
             modelBuilder.Entity("ScholarSystem_MVC.Models.Student", b =>
@@ -115,7 +115,7 @@ namespace ScholarSystem_MVC.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Students");
+                    b.ToTable("Students", (string)null);
                 });
 
             modelBuilder.Entity("ScholarSystem_MVC.Models.Teacher", b =>
@@ -149,7 +149,7 @@ namespace ScholarSystem_MVC.Migrations
 
                     b.HasIndex("DepartmentId");
 
-                    b.ToTable("Teachers");
+                    b.ToTable("Teachers", (string)null);
                 });
 
             modelBuilder.Entity("ScholarSystem_MVC.Models.Course", b =>

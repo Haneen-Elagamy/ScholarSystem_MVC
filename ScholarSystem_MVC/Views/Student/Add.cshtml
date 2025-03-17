@@ -1,23 +1,24 @@
 ﻿@model StuWithDeptListViewModel
 @{
     ViewData["Title"] = "Add";
+    Layout = "_MyLayout";
 }
 
 <h1>Add Student</h1>
 
 <form asp-action="SaveAdd" method="post">
     <div class="form-group">
-        <label >Name</label>
+        <label asp-for="Name"></label>
         <input asp-for="Name" class="form-control" />
     </div>
     <div class="form-group">
-        <label>Age</label>
+        <label asp-for="Age"></label>
         <input asp-for="Age" class="form-control" />
     </div>
     <div class="form-group">
-        <label>Department</label>
+        <label asp-for="DepartmentId"></label>
         <select asp-for="DepartmentId" asp-items="@(new SelectList(Model.DeptList, "Id", "Name"))" class="form-control">
-            <option value="">-- Select Department --</option>
+            <option value="0">-- Select Department --</option>
         </select>
     </div>
     <br />

@@ -3,6 +3,7 @@
 
 @{
     ViewData["Title"] = "ShowAll";
+    Layout = "_MyLayout";
 }
 
 <h1>Show All Students </h1>
@@ -10,12 +11,12 @@
 <form method="get" action="@Url.Action("ShowAll", "Student")">
     <div class="row">
         <!-- Search Field -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <input type="text" name="search" value="@Context.Request.Query["search"]" placeholder="Search by Name" class="form-control" />
         </div>
 
         <!-- Department Dropdown -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <select name="departmentId" class="form-control">
                 <option value="">-- Select Department --</option>
                 @foreach (var dept in ViewBag.Departments)

@@ -18,7 +18,8 @@ namespace ScholarSystem_MVC.Controllers
             return View();
         }
 
-        public IActionResult ShowAll(int? departmentId, string search="",int page=1,int pageSize=5)
+        #region Show All
+        public IActionResult ShowAll(int? departmentId, string search = "", int page = 1, int pageSize = 5)
         {
 
             // Get all students
@@ -43,13 +44,17 @@ namespace ScholarSystem_MVC.Controllers
 
             return View("ShowAll", StudentListModel);
         }
+        #endregion
 
+        #region Show Details
         public IActionResult ShowDetails(int id)
         {
-            Student student=studentBL.GetById(id);
-            return View("ShowDetails",student);
-        }
+            Student student = studentBL.GetById(id);
+            return View("ShowDetails", student);
+        } 
+        #endregion 
 
+        #region Add LifeCycle
         //Add life cycle
         [HttpGet]
         public IActionResult Add()
@@ -59,21 +64,21 @@ namespace ScholarSystem_MVC.Controllers
             //declare viewModel
             StuWithDeptListViewModel SDVM = new StuWithDeptListViewModel
             {
-                DeptList= departmentList //pass the list of departments
+                DeptList = departmentList //pass the list of departments
             };
-            return View(nameof(Add),SDVM);
+            return View(nameof(Add), SDVM);
         }
         [HttpPost]
         public IActionResult SaveAdd(StuWithDeptListViewModel StuFromReq)
         {
-            
+
             if (StuFromReq.Name != null)
             {
                 Student NewStudent = new Student
                 {
                     Name = StuFromReq.Name,
                     Age = StuFromReq.Age,
-                    IsDeleted= StuFromReq.IsDeleted,
+                    IsDeleted = StuFromReq.IsDeleted,
                     DepartmentId = StuFromReq.DepartmentId
                 };
                 studentBL.AddStudent(NewStudent);
@@ -82,34 +87,36 @@ namespace ScholarSystem_MVC.Controllers
             //if validation fails 
             StuFromReq.DeptList = departmentBL.GetAll();
             return View(nameof(Add), StuFromReq);
-        }
+        } 
+        #endregion 
 
+        #region Edit LifeCycle
         //Edit LifeCycle
         public IActionResult Edit(int id)
         {
             //Catch diffrent resources
             Student StuFromDB = studentBL.GetById(id);
-            List<Department> DepartmentList= departmentBL.GetAll();
+            List<Department> DepartmentList = departmentBL.GetAll();
             //declare ViewModel
             StuWithDeptListViewModel SDVM = new StuWithDeptListViewModel
             {
-               Id=StuFromDB.Id,
-               Name=StuFromDB.Name,
-               Age=StuFromDB.Age,
-               IsDeleted= StuFromDB.IsDeleted,
-               DepartmentId=StuFromDB.DepartmentId,
-               DeptList = DepartmentList
+                Id = StuFromDB.Id,
+                Name = StuFromDB.Name,
+                Age = StuFromDB.Age,
+                IsDeleted = StuFromDB.IsDeleted,
+                DepartmentId = StuFromDB.DepartmentId,
+                DeptList = DepartmentList
             };
             return View(nameof(Edit), SDVM);
 
         }
-        public IActionResult SaveEdit(StuWithDeptListViewModel StuFromReq,int id)
+        public IActionResult SaveEdit(StuWithDeptListViewModel StuFromReq, int id)
         {
             //Defensive
-            if(StuFromReq.Name != null)
+            if (StuFromReq.Name != null)
             {
                 //old object
-                Student StuFromDB= studentBL.GetById(id);
+                Student StuFromDB = studentBL.GetById(id);
 
                 if (StuFromDB == null)
                 {
@@ -117,9 +124,9 @@ namespace ScholarSystem_MVC.Controllers
                 }
                 //Edit in memory
                 StuFromDB.Name = StuFromReq.Name;
-                StuFromDB.Age= StuFromReq.Age;
-                StuFromDB.IsDeleted= StuFromReq.IsDeleted;
-                StuFromDB.DepartmentId= StuFromReq.DepartmentId;
+                StuFromDB.Age = StuFromReq.Age;
+                StuFromDB.IsDeleted = StuFromReq.IsDeleted;
+                StuFromDB.DepartmentId = StuFromReq.DepartmentId;
 
                 // Mark entity as modified (if using EF Core)
                 _context.Students.Update(StuFromDB);
@@ -128,15 +135,18 @@ namespace ScholarSystem_MVC.Controllers
                 //if saved
                 return RedirectToAction(nameof(ShowAll));
             }
-            StuFromReq.DeptList= departmentBL.GetAll();
-            return View(nameof(Edit),StuFromReq);
+            StuFromReq.DeptList = departmentBL.GetAll();
+            return View(nameof(Edit), StuFromReq);
 
         }
+        #endregion
+
+        #region Delete LifeCycle
         public IActionResult Delete(int id)
         {
-            Student StuFromDB= studentBL.GetById(id);
-            if(StuFromDB == null) return NotFound();
-            return View("DeleteWarning",StuFromDB);
+            Student StuFromDB = studentBL.GetById(id);
+            if (StuFromDB == null) return NotFound();
+            return View("DeleteWarning", StuFromDB);
         }
 
         [HttpPost]
@@ -152,6 +162,7 @@ namespace ScholarSystem_MVC.Controllers
             _context.SaveChanges();
 
             return RedirectToAction(nameof(ShowAll));
-        }
+        } 
+        #endregion
     }
 }

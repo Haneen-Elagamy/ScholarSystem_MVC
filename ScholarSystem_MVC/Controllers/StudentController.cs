@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using ScholarSystem_MVC.DbContexts;
 using ScholarSystem_MVC.Models;
 using ScholarSystem_MVC.ViewModels;
@@ -162,7 +163,32 @@ namespace ScholarSystem_MVC.Controllers
             _context.SaveChanges();
 
             return RedirectToAction(nameof(ShowAll));
-        } 
+        }
         #endregion
+
+        [HttpGet]
+        public IActionResult StudentCourseDetails(int StudentId,int CourseId)
+        {
+            //fetch the student degree for a course
+            var StudentCourse=_context.StuCrsRes
+                .Include(scr=>scr.Student)
+                .Include(scr=>scr.Course)
+                .FirstOrDefault(scr=>scr.StudentId == StudentId &&scr.CourseId==CourseId);
+
+            if (StudentCourse == null)
+            {
+                return NotFound(); // Return 404 if not found
+            }
+            var viewModel = new StuCrsResViewModel
+            {
+                StudentName = StudentCourse.Student.Name,
+                CourseName = StudentCourse.Course.Name,
+                Grade = StudentCourse.Grade,
+                Color = StudentCourse.Grade >= StudentCourse.Course.MinDegree ? "green" : "red"
+            };
+
+            return View(nameof(StudentCourseDetails),viewModel);
+
+        }
     }
 }

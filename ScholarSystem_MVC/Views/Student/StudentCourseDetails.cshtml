@@ -1,0 +1,23 @@
+﻿@model StuCrsResViewModel 
+@{
+    ViewData["Title"] = "StudentCourseDetails";
+    Layout = "_MyLayout";
+}
+
+<h1>Student Course Details</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Details</h5>
+        <p><strong>Student Name:</strong> @Model.StudentName</p>
+        <p><strong>Course Name:</strong> @Model.CourseName</p>
+        <p>
+            <strong>Degree:</strong>
+            <span style="color: @Model.Color;">
+                @Model.Grade
+            </span>
+        </p>
+    </div>
+</div>
+
+<a asp-action="ShowAll" class="btn btn-secondary mt-3">Back to Students</a>

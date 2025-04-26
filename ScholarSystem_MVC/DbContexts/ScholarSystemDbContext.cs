@@ -7,11 +7,21 @@ namespace ScholarSystem_MVC.DbContexts
 {
     public class ScholarSystemDbContext:DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server=.;Database=ScholarSystem;Trusted_Connection=True;TrustServerCertificate=True;");
+        //}
+
+        public ScholarSystemDbContext():base()
         {
-            optionsBuilder.UseSqlServer("Server=.;Database=ScholarSystem;Trusted_Connection=True;TrustServerCertificate=True;");
+                
         }
 
+        //Ask CLR by inject Dependecy
+        public ScholarSystemDbContext(DbContextOptions options) : base(options)
+        {
+
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //One to Many>>Department to Student

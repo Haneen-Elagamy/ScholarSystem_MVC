@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ScholarSystem_MVC.DbContexts;
 using ScholarSystem_MVC.Models;
+using ScholarSystem_MVC.Repositories;
 using ScholarSystem_MVC.ViewModels;
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -11,9 +12,20 @@ namespace ScholarSystem_MVC.Controllers
 {
     public class StudentController : Controller
     {
-        ScholarSystemDbContext _context = new ScholarSystemDbContext();
-        StudentBL studentBL = new StudentBL();
-        DepartmentBL departmentBL = new DepartmentBL();
+        //ScholarSystemDbContext _context = new ScholarSystemDbContext();
+        //StudentBL studentBL = new StudentBL();
+        //DepartmentBL departmentBL = new DepartmentBL();
+        private readonly ScholarSystemDbContext _context;
+        private readonly IStudentRepository _studentRepository;
+        private readonly IDepartmentRepository _departmentRepository;
+
+        public StudentController(ScholarSystemDbContext context, IStudentRepository studentRepository,IDepartmentRepository departmentRepository)
+        {
+            _context = context;
+            _studentRepository = studentRepository;
+            _departmentRepository = departmentRepository;
+                
+        }
         public IActionResult Index()
         {
             return View();
@@ -24,7 +36,7 @@ namespace ScholarSystem_MVC.Controllers
         {
 
             // Get all students
-            var students = studentBL.GetAll();
+            var students = _studentRepository.GetAllWithLoading();
 
             // Apply search filter if search term is provided
             if (!string.IsNullOrEmpty(search))
@@ -41,7 +53,7 @@ namespace ScholarSystem_MVC.Controllers
             IPagedList<Student> StudentListModel = students.ToPagedList(page, pageSize);
 
             // Pass department list to ViewBag for the dropdown
-            ViewBag.Departments = new SelectList(departmentBL.GetAll(), "Id", "Name");
+            ViewBag.Departments = new SelectList(_departmentRepository.GetAllWithLoading(), "Id", "Name");
 
             return View("ShowAll", StudentListModel);
         }
@@ -50,7 +62,7 @@ namespace ScholarSystem_MVC.Controllers
         #region Show Details
         public IActionResult ShowDetails(int id)
         {
-            Student student = studentBL.GetById(id);
+            Student student = _studentRepository.GetByIdWithLoading(id);
             return View("ShowDetails", student);
         } 
         #endregion 
@@ -61,7 +73,7 @@ namespace ScholarSystem_MVC.Controllers
         public IActionResult Add()
         {
             //catch DepartmentList
-            List<Department> departmentList = departmentBL.GetAll();
+            List<Department> departmentList = _departmentRepository.GetAllWithLoading();
             //declare viewModel
             StuWithDeptListViewModel SDVM = new StuWithDeptListViewModel
             {
@@ -82,11 +94,13 @@ namespace ScholarSystem_MVC.Controllers
                     IsDeleted = StuFromReq.IsDeleted,
                     DepartmentId = StuFromReq.DepartmentId
                 };
-                studentBL.AddStudent(NewStudent);
+                _studentRepository.Add(NewStudent);
+                _studentRepository.save();
+                TempData["NotificationAdded"] = $"Student with name {StuFromReq.Name},and with Id {StuFromReq.Id} was added successfully!";
                 return RedirectToAction(nameof(ShowAll));
             }
             //if validation fails 
-            StuFromReq.DeptList = departmentBL.GetAll();
+            StuFromReq.DeptList = _departmentRepository.GetAllWithLoading();
             return View(nameof(Add), StuFromReq);
         } 
         #endregion 
@@ -96,8 +110,8 @@ namespace ScholarSystem_MVC.Controllers
         public IActionResult Edit(int id)
         {
             //Catch diffrent resources
-            Student StuFromDB = studentBL.GetById(id);
-            List<Department> DepartmentList = departmentBL.GetAll();
+            Student StuFromDB = _studentRepository.GetById(id);
+            List<Department> DepartmentList = _departmentRepository.GetAllWithLoading();
             //declare ViewModel
             StuWithDeptListViewModel SDVM = new StuWithDeptListViewModel
             {
@@ -117,7 +131,7 @@ namespace ScholarSystem_MVC.Controllers
             if (StuFromReq.Name != null)
             {
                 //old object
-                Student StuFromDB = studentBL.GetById(id);
+                Student StuFromDB = _studentRepository.GetById(id);
 
                 if (StuFromDB == null)
                 {
@@ -134,9 +148,10 @@ namespace ScholarSystem_MVC.Controllers
                 //Edit in DB
                 _context.SaveChanges();
                 //if saved
+                TempData["NotificationAdded"]= $"Student with name {StuFromReq.Name} ,and with Id {StuFromReq.Id} was Edited successfully!";
                 return RedirectToAction(nameof(ShowAll));
             }
-            StuFromReq.DeptList = departmentBL.GetAll();
+            StuFromReq.DeptList = _departmentRepository.GetAllWithLoading();
             return View(nameof(Edit), StuFromReq);
 
         }
@@ -145,7 +160,7 @@ namespace ScholarSystem_MVC.Controllers
         #region Delete LifeCycle
         public IActionResult Delete(int id)
         {
-            Student StuFromDB = studentBL.GetById(id);
+            Student StuFromDB = _studentRepository.GetById(id);
             if (StuFromDB == null) return NotFound();
             return View("DeleteWarning", StuFromDB);
         }
@@ -153,15 +168,16 @@ namespace ScholarSystem_MVC.Controllers
         [HttpPost]
         public IActionResult ConfirmDelete(int id)
         {
-            Student StuFromDB = studentBL.GetById(id);
+            Student StuFromDB = _studentRepository.GetById(id);
             if (StuFromDB == null) return NotFound();
 
             // If using soft delete
             StuFromDB.IsDeleted = true;
-            _context.Students.Update(StuFromDB);
-
-            _context.SaveChanges();
-
+            //_context.Students.Update(StuFromDB);
+            _studentRepository.Update(StuFromDB);
+            //_context.SaveChanges();
+            _studentRepository.save();
+            TempData["NotificationAdded"] = $"Student with Id {id} was Deleted successfully!";
             return RedirectToAction(nameof(ShowAll));
         }
         #endregion

@@ -3,7 +3,12 @@
     ViewData["Title"] = "ShowAll";
     Layout = "_MyLayout";
 }
-
+@if (TempData["NotificationAdded"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["NotificationAdded"]
+    </div>
+}
 <h1>Courses List</h1>
 <a asp-action="Add" class="btn btn-primary  mt-3 mb-3" >Add New Course</a>
 <table class="table">

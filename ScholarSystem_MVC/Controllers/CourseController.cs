@@ -1,19 +1,29 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ScholarSystem_MVC.DbContexts;
 using ScholarSystem_MVC.Models;
+using ScholarSystem_MVC.Repositories;
 
 namespace ScholarSystem_MVC.Controllers
 {
     public class CourseController : Controller
     {
 
-        ScholarSystemDbContext Context = new ScholarSystemDbContext();
-        CourseBL courseBL = new CourseBL();
+        //ScholarSystemDbContext Context = new ScholarSystemDbContext();
+        //CourseBL courseBL = new CourseBL();
+        private readonly ScholarSystemDbContext _context;
+        private readonly ICourseRepository _courseRepository;
+        private readonly IDepartmentRepository _departmentRepository;
+        public CourseController(ScholarSystemDbContext context,ICourseRepository courseRepository, IDepartmentRepository departmentRepository)
+        {
+            _context = context;
+            _courseRepository = courseRepository;
+            _departmentRepository = departmentRepository;
+        }
 
         #region Show All
         public IActionResult ShowAll()
         {
-            List<Course> CoursesList = courseBL.GetAll();
+            List<Course> CoursesList = _courseRepository.GetAllWithLoading();
             return View(nameof(ShowAll), CoursesList);
         } 
         #endregion 
@@ -21,7 +31,7 @@ namespace ScholarSystem_MVC.Controllers
         #region Show Details
         public IActionResult ShowDetails(int id)
         {
-            Course course = courseBL.GetById(id);
+            Course course = _courseRepository.GetByIdWithLoading(id);
             if (course == null)
             {
                 return NotFound();
@@ -35,7 +45,7 @@ namespace ScholarSystem_MVC.Controllers
         [HttpGet]
         public IActionResult Add()
         {
-            ViewBag.Departments = courseBL.GetDepartments();
+            ViewBag.Departments = _departmentRepository.GetAll();
             return View(nameof(Add));
         }
 
@@ -44,11 +54,13 @@ namespace ScholarSystem_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                Context.Courses.Add(courseSent);
+                _courseRepository.Add(courseSent);
+                _courseRepository.save();
+                TempData["NotificationAdded"] = "Course was Added Successfully!";
                 return RedirectToAction(nameof(ShowAll));
             }
 
-            ViewBag.Departments = courseBL.GetDepartments();
+            ViewBag.Departments = _departmentRepository.GetAll();
             return View(nameof(Add), courseSent);
         } 
         #endregion
@@ -57,12 +69,12 @@ namespace ScholarSystem_MVC.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            Course courseFromReq = courseBL.GetById(id);
+            Course courseFromReq = _courseRepository.GetById(id);
             if (courseFromReq == null)
             {
                 return NotFound();
             }
-            ViewBag.Departments = courseBL.GetDepartments();
+            ViewBag.Departments = _departmentRepository.GetAll();
             return View(nameof(Edit), courseFromReq);
         }
 
@@ -71,10 +83,12 @@ namespace ScholarSystem_MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                courseBL.Update(courseSent);
+                _courseRepository.Update(courseSent);
+                _courseRepository.save();
+                TempData["NotificationAdded"] = "Course was Edited Successfully!";
                 return RedirectToAction(nameof(ShowAll));
             }
-            ViewBag.Departments = courseBL.GetDepartments();
+            ViewBag.Departments = _courseRepository.GetAll();
             return View(nameof(Edit), courseSent);
 
         }
@@ -84,19 +98,21 @@ namespace ScholarSystem_MVC.Controllers
         [HttpGet]
         public IActionResult Delete(int id)
         {
-            Course courseFromReq = courseBL.GetById(id);
+            Course courseFromReq = _courseRepository.GetByIdWithLoading(id);
             if (courseFromReq == null)
             {
                 return NotFound();
             }
-            ViewBag.Departments = courseBL.GetDepartments();
+            ViewBag.Departments = _departmentRepository.GetAll();
             return View(nameof(Delete), courseFromReq);
         }
 
         [HttpPost]
         public IActionResult DeleteConfirmed(int id)
         {
-            courseBL.Delete(id);
+            _courseRepository.DeleteById(id);
+            _courseRepository.save();
+            TempData["NotificationAdded"] = "Course was deleted Successfully!";
             return RedirectToAction(nameof(ShowAll));
         }
         #endregion

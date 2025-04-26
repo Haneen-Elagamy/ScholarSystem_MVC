@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using ScholarSystem_MVC.DbContexts;
+using ScholarSystem_MVC.Repositories;
+
 namespace ScholarSystem_MVC
 {
     public class Program
@@ -8,6 +12,16 @@ namespace ScholarSystem_MVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<ICourseRepository, CourseRepository>();
+
+            builder.Services.AddDbContext<ScholarSystemDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("CS"));
+            });
+
+
 
             var app = builder.Build();
 
@@ -25,6 +39,13 @@ namespace ScholarSystem_MVC
             app.UseRouting();
 
             app.UseAuthorization();
+
+            //Custom Route to show All Courses
+            app.MapControllerRoute(
+            name: "courses",
+            pattern: "AllCourses/{action=ShowAll}/{id:int:min(1)?}",
+            defaults: new { controller = "Course" });
+
 
             app.MapControllerRoute(
                 name: "default",

@@ -6,6 +6,12 @@
     Layout = "_MyLayout";
 }
 
+@if (TempData["NotificationAdded"] != null)
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["NotificationAdded"]
+    </div>
+}
 <h1>Show All Students </h1>
 <a href="/Student/Add" class="btn btn-success mt-3 mb-3">New</a>
 <form method="get" action="@Url.Action("ShowAll", "Student")">

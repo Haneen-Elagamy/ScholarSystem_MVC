@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ScholarSystem_MVC.DbContexts;
 using ScholarSystem_MVC.Models;
+using ScholarSystem_MVC.Repositories;
 using ScholarSystem_MVC.ViewModels;
 using System.Reflection.Metadata.Ecma335;
 
@@ -10,8 +11,18 @@ namespace ScholarSystem_MVC.Controllers
 {
     public class DepartmentController : Controller
     {
-        ScholarSystemDbContext _context=new ScholarSystemDbContext();
-        DepartmentBL departmentBL=new DepartmentBL();
+        //ScholarSystemDbContext _context=new ScholarSystemDbContext();
+        private readonly ScholarSystemDbContext _context;
+        //DepartmentBL departmentBL=new DepartmentBL();
+        private readonly IDepartmentRepository _departmentRepository;
+
+        public DepartmentController(IDepartmentRepository departmentRepository,ScholarSystemDbContext context)
+        {
+            _departmentRepository=departmentRepository;
+            _context=context;
+            
+        }
+        
         public IActionResult Index()
         {
             return View();
@@ -19,13 +30,13 @@ namespace ScholarSystem_MVC.Controllers
 
         public IActionResult ShowAll()
         {
-            List<Department> DepartmentListModel =departmentBL.GetAll();
+            List<Department> DepartmentListModel = _departmentRepository.GetAllWithLoading();
             return View("ShowAll",DepartmentListModel);
         }
 
         public IActionResult ShowDetails(int id)
         {
-            Department department=departmentBL.GetById(id);
+            Department department = _departmentRepository.GetById(id);
             return View("ShowDetails",department);
         }
 
@@ -42,7 +53,9 @@ namespace ScholarSystem_MVC.Controllers
         {
             if (ModelState.IsValid==true)
             {
-                departmentBL.AddDept(DeptFromReq);
+                _departmentRepository.Add(DeptFromReq);
+                _departmentRepository.save();
+                TempData["NotificationAdded"] = "Department was Added Successfully";
                 return RedirectToAction(nameof(ShowAll));
             }
             //if (DeptFromReq.Name != null)
@@ -84,7 +97,7 @@ namespace ScholarSystem_MVC.Controllers
         public IActionResult Edit(int id)
         {
             //Fetch Department from Database
-            Department DeptFromReq=departmentBL.GetById(id);
+            Department DeptFromReq=_departmentRepository.GetById(id);
             //if(DeptFromReq == null)
             //{
             //    return NotFound();//Handle invalid Id
@@ -92,54 +105,54 @@ namespace ScholarSystem_MVC.Controllers
             return View(nameof(Edit),DeptFromReq);
         }
 
-        //[HttpPost]
-        //public IActionResult SaveEdit(Department DeptFromReq)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return View(nameof(Edit), DeptFromReq);
-        //    }
-
-        //    // Fetch department from DB
-        //    Department DeptFromDB = departmentBL.GetById(DeptFromReq.Id);
-        //    if (DeptFromDB == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    // Update values
-        //    DeptFromDB.Name = DeptFromReq.Name;
-        //    DeptFromDB.MgrName = DeptFromReq.MgrName;
-
-        //    // Save changes
-        //    _context.Departments.Update(DeptFromDB);
-        //    _context.SaveChanges();
-
-        //    return RedirectToAction(nameof(ShowAll));
-        //}
-
         [HttpPost]
         public IActionResult SaveEdit(Department DeptFromReq)
         {
-            if (DeptFromReq.Name!=null)
+            if (!ModelState.IsValid)
             {
-                // Fetch department from DB
-                Department DeptFromDB = departmentBL.GetById(DeptFromReq.Id);
-                // Update values
-                DeptFromDB.Name = DeptFromReq.Name;
-                DeptFromDB.MgrName = DeptFromReq.MgrName;
-
-                // Save changes
-                _context.Departments.Update(DeptFromDB);
-                _context.SaveChanges();
-
-                return RedirectToAction(nameof(ShowAll));
+                return View(nameof(Edit), DeptFromReq);
             }
 
-            return View(nameof(Edit), DeptFromReq);
+            // Fetch department from DB
+            Department DeptFromDB = _departmentRepository.GetById(DeptFromReq.Id);
+            if (DeptFromDB == null)
+            {
+                return NotFound();
+            }
+
+            // Update values
+            DeptFromDB.Name = DeptFromReq.Name;
+            DeptFromDB.MgrName = DeptFromReq.MgrName;
+
+            // Save changes
+            _context.Departments.Update(DeptFromDB);
+            _context.SaveChanges();
+            TempData["NotificationAdded"] = "Department was Edited Successfully!";
+            return RedirectToAction(nameof(ShowAll));
+        }
+
+        //[HttpPost]
+        //public IActionResult SaveEdit(Department DeptFromReq)
+        //{
+        //    if (DeptFromReq.Name!=null)
+        //    {
+        //        // Fetch department from DB
+        //        Department DeptFromDB = _departmentRepository.GetById(DeptFromReq.Id);
+        //        // Update values
+        //        DeptFromDB.Name = DeptFromReq.Name;
+        //        DeptFromDB.MgrName = DeptFromReq.MgrName;
+
+        //        // Save changes
+        //        _context.Departments.Update(DeptFromDB);
+        //        _context.SaveChanges();
+
+        //        return RedirectToAction(nameof(ShowAll));
+        //    }
+
+        //    return View(nameof(Edit), DeptFromReq);
 
             
-        }
+        //}
 
 
     }
